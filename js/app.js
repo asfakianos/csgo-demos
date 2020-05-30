@@ -1,3 +1,4 @@
+#!/usr/local/bin/node
 /**
  * Takes a demo file location as a command line argument and parses weapon damage and kills
  **/
@@ -5,70 +6,83 @@
 const fs = require("fs");
 const demofile = require("demofile");
 
-fname = process.argv[process.argv.length - 1];
+let fname = process.argv[process.argv.length - 1];
+let fout = fname.replace(".dem", ".out");
 
 let killEventCount = 0;
 let hurtEventCount = 0;
 
-// Parses the demo file given as a command line argument
-fs.readFile(fname, (err, buffer) => {
-  const demoFile = new demofile.DemoFile();
-
-  // Logging all instances of a player death
-  demoFile.gameEvents.on("player_death", e => {
-    if (!demoFile.gameRules.isWarmup) {
-      killEventCount += 1;
-      const target = demoFile.entities.getByUserId(e.userid);
-      const targetName = target ? target.name : "unnamed";
-      const targetPos = target ? `(${x_to_res(target.position.x)},${y_to_res(target.position.y)})` : "()";
-
-      const attacker = demoFile.entities.getByUserId(e.attacker);
-      const attName = attacker ? attacker.name : "unnamed";
-      const attPos = attacker ? `(${x_to_res(attacker.position.x)},${y_to_res(attacker.position.y)})` : "()";
-
-      const isHS = e.headshot ? " HS" : "";
-      const isWB = e.penetrated > 0 ? " WB" : "";
-
-      console.log(`KILL/!${attName}/!${attPos}/!${e.weapon}${isHS}${isWB}/!${targetName}/!${targetPos}`);
-    }
-  });
-
-  // Logging all instances of a player taking damage in response to shooting
-  demoFile.gameEvents.on("player_hurt", e => {
-    if (!demoFile.gameRules.isWarmup) {
-      hurtEventCount += 1;
-
-      const target = demoFile.entities.getByUserId(e.userid);
-      const targetName = target ? target.name : "unnamed";
-      const targetPos = target ? `(${x_to_res(target.position.x)},${y_to_res(target.position.y)})` : "()";
-
-      const attacker = demoFile.entities.getByUserId(e.attacker);
-      const attName = attacker ? attacker.name : "unnamed";
-      const attPos = attacker ? `(${x_to_res(attacker.position.x)},${y_to_res(attacker.position.y)})` : "()";
-
-      console.log(`DMG/!${attName}/!${attPos}/!${e.weapon}/!${targetName}/!${targetPos}/!${e.dmg_health}`);
-    }
-  });
-
-  // Taking note of round end (and score) just for sanity purposes
-  demoFile.gameEvents.on("round_officially_ended", e => {
-    const teams = demoFile.teams;
-
-    const terrorists = teams[2];
-    const cts = teams[3];
-
-    console.log(
-      "END: \tTerrorists: %s score %d\n\tCTs: %s score %d",
-      terrorists.clanName,
-      terrorists.score,
-      cts.clanName,
-      cts.score
-    );
-    console.log(`\nkills: ${killEventCount}\nHurt: ${hurtEventCount}`);
-  });
-
-  demoFile.parse(buffer);
+fs.writeFile(fout, `${fout}\n`, e => {
+	if (e) throw e;
+	console.log(`Created ${fout}`);
 });
+try {
+	// Parses the demo file given as a command line argument
+	fs.readFile(fname, (err, buffer) => {
+	  const demoFile = new demofile.DemoFile();
+
+	  // Logging all instances of a player death
+	  demoFile.gameEvents.on("player_death", e => {
+	    if (!demoFile.gameRules.isWarmup) {
+	      killEventCount += 1;
+	      const target = demoFile.entities.getByUserId(e.userid);
+	      const targetName = target ? target.name : "unnamed";
+	      const targetPos = target ? `${x_to_res(target.position.x)},${y_to_res(target.position.y)}` : "()";
+
+	      const attacker = demoFile.entities.getByUserId(e.attacker);
+	      const attName = attacker ? attacker.name : "unnamed";
+	      const attPos = attacker ? `${x_to_res(attacker.position.x)},${y_to_res(attacker.position.y)}` : "()";
+
+	      const isHS = e.headshot ? " HS" : "";
+	      const isWB = e.penetrated > 0 ? " WB" : "";
+
+	      fs.appendFile(fout, `KILL/!${attName}/!${attPos}/!${e.weapon}${isHS}${isWB}/!${targetName}/!${targetPos}\n`, e => {
+	      	if (e) throw e;
+	      });
+	      // console.log(`KILL/!${attName}/!${attPos}/!${e.weapon}${isHS}${isWB}/!${targetName}/!${targetPos}`);
+	    }
+	  });
+
+	  // Logging all instances of a player taking damage in response to shooting
+	  demoFile.gameEvents.on("player_hurt", e => {
+	    if (!demoFile.gameRules.isWarmup) {
+	      hurtEventCount += 1;
+
+	      const target = demoFile.entities.getByUserId(e.userid);
+	      const targetName = target ? target.name : "unnamed";
+	      const targetPos = target ? `${x_to_res(target.position.x)},${y_to_res(target.position.y)}` : "()";
+
+	      const attacker = demoFile.entities.getByUserId(e.attacker);
+	      const attName = attacker ? attacker.name : "unnamed";
+	      const attPos = attacker ? `${x_to_res(attacker.position.x)},${y_to_res(attacker.position.y)}` : "()";
+
+	      fs.appendFile(fout, `DMG/!${attName}/!${attPos}/!${e.weapon}/!${targetName}/!${targetPos}/!${e.dmg_health}\n`, e => {
+	      	if (e) throw e;
+	      });
+	      // console.log(`DMG/!${attName}/!${attPos}/!${e.weapon}/!${targetName}/!${targetPos}/!${e.dmg_health}`);
+	    }
+	  });
+
+	  // Taking note of round end (and score) just for sanity purposes
+	  demoFile.gameEvents.on("round_officially_ended", e => {
+	    const teams = demoFile.teams;
+
+	    const terrorists = teams[2];
+	    const cts = teams[3];
+
+	    console.log(`END: \tTerrorists: ${terrorists.clanName} score ${terrorists.score}\n\tCTs: ${cts.clanName} score ${cts.score}`);
+		// fs.appendFile(fout, `END: \tTerrorists: ${terrorists.clanName} score ${terrorists.score}\tCTs: ${cts.clanName} score ${cts.score}\n`, e => {
+		//   if (e) throw e;
+		// });
+	    // console.log(`\nkills: ${killEventCount}\nHurt: ${hurtEventCount}`);
+	  });
+
+	  demoFile.parse(buffer);
+	});
+} catch (e) {
+	console.log("Encountered an error when trying to open the specified demo file.");
+	console.error(e);
+}
 
 function x_to_res(xinput) {
   const startX = -3217;
