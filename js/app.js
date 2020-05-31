@@ -84,6 +84,7 @@ try {
 	console.error(e);
 }
 
+// WIP - Ideally these should normalize the coordinates from the demo to fit a map, but this'll likely be moved to Python once I figure out the mapping
 function x_to_res(xinput) {
   const startX = -3217;
   const endX = 1912;
