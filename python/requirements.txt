@@ -1,0 +1,4 @@
+feather-format==0.4.*
+pyarrow==0.17.*
+numpy==1.17.*
+pandas==0.25.*
