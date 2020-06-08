@@ -7,22 +7,33 @@ import numpy as np
 import pandas as pd
 
 DELIM="/!"
+HEADER=["EVENTTYPE", "ATTNAME", "ATTPOS", "HOW", "TARNAME", "TARPOS", "DMG"]
 
-def main(fname):
+def save(fname):
 	try:
 		# Need to specify engine as python due to our delimiter being > 1 (so the c engine won't work...)
 		fout = pd.read_csv(fname, delimiter=DELIM, skiprows=1, engine='python', 
 						   header=None, 
-						   names=["EVENTTYPE", "ATTNAME", "ATTPOS", "HOW", "TARNAME", "TARPOS", "DMG"]
+						   names=HEADER
 						   )
-		print("\tSuccesfully read csv!") # Debug
-		print(fout) # Debug
+		fout = fout[fout.ATTPOS != ("NAN" or "ATTPOS")] # Removing 'empty' rows
+		fout = fout.reset_index() # Reset index to fix index of removed rows
+
+		##
+		# DEBUG
+		##
+		print("\tSuccesfully read csv!") 
+		# pd.set_option('display.max_rows', None)
+		print(fout) 
+
 		outName = fname.split(".")[0] + ".feather"
+		print(outName)
 		fout.to_feather(outName)
+
 		print("\tSaved file to " + outName + " in feather format!") # Debug
 	except:
 		print(f"ran into an I/O issue with given file: {fname}")
 
 
 if __name__ == '__main__':
-	main(sys.argv[1])
+	save(sys.argv[1])

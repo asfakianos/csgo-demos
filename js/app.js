@@ -27,11 +27,11 @@ try {
 	      killEventCount += 1;
 	      const target = demoFile.entities.getByUserId(e.userid);
 	      const targetName = target ? target.name : "unnamed";
-	      const targetPos = target ? `${x_to_res(target.position.x)},${y_to_res(target.position.y)}` : "()";
+	      const targetPos = target ? `${x_to_res(target.position.x)},${y_to_res(target.position.y)}` : "NAN";
 
 	      const attacker = demoFile.entities.getByUserId(e.attacker);
 	      const attName = attacker ? attacker.name : "unnamed";
-	      const attPos = attacker ? `${x_to_res(attacker.position.x)},${y_to_res(attacker.position.y)}` : "()";
+	      const attPos = attacker ? `${x_to_res(attacker.position.x)},${y_to_res(attacker.position.y)}` : "NAN";
 
 	      const isHS = e.headshot ? " HS" : "";
 	      const isWB = e.penetrated > 0 ? " WB" : "";
@@ -50,11 +50,11 @@ try {
 
 	      const target = demoFile.entities.getByUserId(e.userid);
 	      const targetName = target ? target.name : "unnamed";
-	      const targetPos = target ? `${x_to_res(target.position.x)},${y_to_res(target.position.y)}` : "()";
+	      const targetPos = target ? `${x_to_res(target.position.x)},${y_to_res(target.position.y)}` : "NAN";
 
 	      const attacker = demoFile.entities.getByUserId(e.attacker);
 	      const attName = attacker ? attacker.name : "unnamed";
-	      const attPos = attacker ? `${x_to_res(attacker.position.x)},${y_to_res(attacker.position.y)}` : "()";
+	      const attPos = attacker ? `${x_to_res(attacker.position.x)},${y_to_res(attacker.position.y)}` : "NAN";
 
 	      fs.appendFile(fout, `DMG/!${attName}/!${attPos}/!${e.weapon}/!${targetName}/!${targetPos}/!${e.dmg_health}\n`, e => {
 	      	if (e) throw e;
