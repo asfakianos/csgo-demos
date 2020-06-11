@@ -37,16 +37,20 @@ def graph(fname):
 
 	fig,ax = plt.subplots()
 
-	plt.xlim(-35,110)
-	plt.ylim(-10,110)
+	plt.xlim(-30,70)
+	plt.ylim(0,100)
 
 	ax.imshow(img, extent=[-30,70,0,100])
 
-	ax.scatter(attx, atty, color='orange', alpha=0.3)
-	# ax.scatter(tarx, tary, color='blue', alpha=0.3)
+	ax.scatter(attx, atty, color='orange', alpha=0.1)
+	ax.scatter(tarx, tary, color='blue', alpha=0.1)
 
-	ax.get_xaxis().set_major_locator(ticker.LinearLocator(12))
-	ax.get_yaxis().set_major_locator(ticker.LinearLocator(12))
+	# Enable 12 major tick marks:
+	# ax.get_xaxis().set_major_locator(ticker.LinearLocator(12))
+	# ax.get_yaxis().set_major_locator(ticker.LinearLocator(12))
+	# Enable no ticks:
+	ax.get_xaxis().set_major_locator(ticker.NullLocator())
+	ax.get_yaxis().set_major_locator(ticker.NullLocator())
 
 	plt.show()
 
