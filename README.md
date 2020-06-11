@@ -4,3 +4,5 @@ A '20 summer project using [Saul's NodeJS demo parser](https://github.com/saul/d
 
 **Example:**  
 ![Example output](sample.png)
+
+Blue spots represent locations where players died, and orange spots represent locations where players killed from.
