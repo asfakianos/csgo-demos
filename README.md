@@ -10,3 +10,5 @@ Blue spots represent locations where players died, and orange spots represent lo
 
 ## Work Log  
 * **Jun 8** First prototype completed for graphing a match played on CSGO's Overpass map.  
+  * Involves data flow from a NodeJS platform to generate a .out file that is faster to parse than the original .dem file, and a Python script to convert the .out file to a usable format (in this case, a pandas df -> feather format saved to file). A second Python script converts the feather file to a matplotlib plot. As of Jun 8, this process is only working on Overpass.  
+ 
