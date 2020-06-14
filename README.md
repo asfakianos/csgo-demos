@@ -11,4 +11,5 @@ Blue spots represent locations where players died, and orange spots represent lo
 ## Work Log  
 * **Jun 8** First prototype completed for graphing a match played on CSGO's Overpass map.  
   * Involves data flow from a NodeJS platform to generate a .out file that is faster to parse than the original .dem file, and a Python script to convert the .out file to a usable format (in this case, a pandas df -> feather format saved to file). A second Python script converts the feather file to a matplotlib plot. As of Jun 8, this process is only working on Overpass.  
-* **Jun 14** Reformatted code into a single class file. The class expects a single `.out` file to be specified, and will generate a dataframe with an option for saving to a `.feather` format. See [csgodem.py](python/csgodem.py).
+* **Jun 14** Reformatted code into a single class file. The class expects a single `.out` file to be specified, and will generate a dataframe with an option for saving to a `.feather` format. See [csgodem.py](python/csgodem.py).  
+  * The class now parses the team names and map name from a properly generated `.out` file.  
