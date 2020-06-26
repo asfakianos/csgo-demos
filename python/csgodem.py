@@ -14,13 +14,13 @@ HEADER=["EVENTTYPE", "ATTNAME", "ATTPOS", "HOW", "TARNAME", "TARPOS", "DMG"]
 # A lot of these are stretched, and it'd make more sense to normalize the images (common center) and modify app.js, but whatever
 MAP_EXTENT={
 	"de_dust2":[15,103,33,133],
-	"de_overpass":[-30,70,0,100],
+	"de_overpass":[-30,70,0,100], 
 	"de_mirage":[0,100,0,100],
-	"de_train":[-30,70,0,100],
+	"de_train":[10,110,16.5,116.5],
 	"de_nuke":[9,124,-14,116],
-	"de_vertigo":[-30,70,0,100],
-	"de_cache":[-30,70,0,100],
-	"de_inferno":[-30,70,0,100]
+	"de_vertigo":[-30,70,0,100], #TODO
+	"de_cache":[-30,70,0,100], #TODO
+	"de_inferno":[21,121,43,143]
 }
 
 def clean(fname, save=False):
