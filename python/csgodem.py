@@ -11,6 +11,17 @@ import re
 
 DELIM="/!"
 HEADER=["EVENTTYPE", "ATTNAME", "ATTPOS", "HOW", "TARNAME", "TARPOS", "DMG"]
+# A lot of these are stretched, and it'd make more sense to normalize the images (common center) and modify app.js, but whatever
+MAP_EXTENT={
+	"de_dust2":[15,103,33,133],
+	"de_overpass":[-30,70,0,100],
+	"de_mirage":[0,100,0,100],
+	"de_train":[-30,70,0,100],
+	"de_nuke":[9,124,-14,116],
+	"de_vertigo":[-30,70,0,100],
+	"de_cache":[-30,70,0,100],
+	"de_inferno":[-30,70,0,100]
+}
 
 def clean(fname, save=False):
 	"""If save is set to True, the data will be saved in the .feather format and returned. If save is set to False, the data will only be returned"""
@@ -44,23 +55,10 @@ class CSGODem:
 		"""Accepts an outfile (.out) and extracts meta data before parsing the data and creating a dataframe.
 		If this is ever modified to be something more than just hltv parsing, this sort of assumption for team names, map will need to be changed. """
 
-		self.team1 = ""
-		self.team2 = ""
 		# Extracting metadata from the first line of the file
 		with open(outfile, 'r') as file:
-			try:
-				line1 = file.readline()
-				# Grab the team names and map name from the first line of the .out file provided.
-				team_split = re.split(r"\-vs\-", re.split(r"/", line1)[2]) # Initial splits create a single team name @0 and a combination of teamname and mapname.out @1
-				# Replacing all non-alphanum chars with spaces in the first team name
-				self.team1 = re.sub(r"[^\w]+", " ", team_split[0])
-				# Something similar for the second team name and map
-				team_split = re.split(r"[^\w]+", re.split(r".out", team_split[1])[0])
-				self.map_name = team_split[-1] # The map names are always one word and should always show up at the end of the string in these cases.
-				self.team2 = " ".join(team_split[:-1]) # Team names should occupy all other locations
-			except:
-				print("first line wasn't formatted as expected. Using the filename as the only metadata")
-				self.map_name = outfile
+			self.fname = file.readline()[:-5]
+			self.map_name = file.readline().strip() # app.js sets the 2nd line to CSGO's name for the map
 
 		# Leave saving up to the user's input.
 		self.data = clean(outfile, save=save)
@@ -84,10 +82,12 @@ class CSGODem:
 
 			fig,ax = plt.subplots()
 
-			plt.xlim(-30,70)
-			plt.ylim(0,100)
+			current_map_extent = MAP_EXTENT[self.map_name]
 
-			ax.imshow(img, extent=[-30,70,0,100])
+			plt.xlim(current_map_extent[0], current_map_extent[1])
+			plt.ylim(current_map_extent[2], current_map_extent[3])
+
+			ax.imshow(img, extent=current_map_extent)
 
 			ax.scatter(attx, atty, color='orange', alpha=0.1)
 			ax.scatter(tarx, tary, color='blue', alpha=0.1)
@@ -98,19 +98,16 @@ class CSGODem:
 
 			plt.show()
 		except:
-			return "The object was not initialized correctly. Data might be missing post-init"
+			print("The object was not initialized correctly. Data might be missing post-init")
 
 
 	def __str__(self):
-		try:
-			return f"{self.team1} vs {self.team2} on {self.map_name}."
-		except:
-			return "Team names and/or map not properly initialized."
+		return f"{self.map_name} from {self.fname}"
 
 
 def main(fname):
 	dem = CSGODem(fname)
-	print("Loaded " + dem)
+	print("Loaded " + str(dem))
 	dem.graph()
 
 if __name__ == '__main__':

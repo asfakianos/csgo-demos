@@ -21,6 +21,13 @@ try {
 	fs.readFile(fname, (err, buffer) => {
 	  const demoFile = new demofile.DemoFile();
 
+	  // Log metadata on the match
+	  demoFile.on("start", () => {
+	  	fs.appendFile(fout, `${demoFile.header['mapName']}\n`, e=> {
+	  		if (e) throw e;
+	  	});
+	  });
+
 	  // Logging all instances of a player death
 	  demoFile.gameEvents.on("player_death", e => {
 	    if (!demoFile.gameRules.isWarmup) {
