@@ -45,7 +45,7 @@ def graph(fname):
 	ax.scatter(attx, atty, color='orange', alpha=0.1)
 	ax.scatter(tarx, tary, color='blue', alpha=0.1)
 
-	# Enable 12 major tick marks:
+	# Enable 12 major tick marks (12 ticks results in a 0 tick, 100 tick + 10 ticks in between)
 	# ax.get_xaxis().set_major_locator(ticker.LinearLocator(12))
 	# ax.get_yaxis().set_major_locator(ticker.LinearLocator(12))
 	# Enable no ticks:

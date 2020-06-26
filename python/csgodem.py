@@ -16,8 +16,8 @@ def clean(fname, save=False):
 	"""If save is set to True, the data will be saved in the .feather format and returned. If save is set to False, the data will only be returned"""
 	try:
 		# Need to specify engine as python due to our delimiter being > 1 (so the c engine won't work...)
-		fout = pd.read_csv(fname, delimiter=DELIM, skiprows=1, engine='python', 
-						   header=None, 
+		fout = pd.read_csv(fname, delimiter=DELIM, skiprows=1, engine='python',
+						   header=None,
 						   names=HEADER
 						   )
 		fout = fout[fout.ATTPOS != ("NAN" or "ATTPOS")] # Removing 'empty' rows
@@ -44,17 +44,23 @@ class CSGODem:
 		"""Accepts an outfile (.out) and extracts meta data before parsing the data and creating a dataframe.
 		If this is ever modified to be something more than just hltv parsing, this sort of assumption for team names, map will need to be changed. """
 
+		self.team1 = ""
+		self.team2 = ""
 		# Extracting metadata from the first line of the file
 		with open(outfile, 'r') as file:
-			line1 = file.readline()
-			# Grab the team names and map name from the first line of the .out file provided.
-			team_split = re.split(r"\-vs\-", re.split(r"/", line1)[2]) # Initial splits create a single team name @0 and a combination of teamname and mapname.out @1
-			# Replacing all non-alphanum chars with spaces in the first team name
-			self.team1 = re.sub(r"[^\w]+", " ", team_split[0])
-			# Something similar for the second team name and map
-			team_split = re.split(r"[^\w]+", re.split(r".out", team_split[1])[0])
-			self.map_name = team_split[-1] # The map names are always one word and should always show up at the end of the string in these cases.
-			self.team2 = " ".join(team_split[:-1]) # Team names should occupy all other locations
+			try:
+				line1 = file.readline()
+				# Grab the team names and map name from the first line of the .out file provided.
+				team_split = re.split(r"\-vs\-", re.split(r"/", line1)[2]) # Initial splits create a single team name @0 and a combination of teamname and mapname.out @1
+				# Replacing all non-alphanum chars with spaces in the first team name
+				self.team1 = re.sub(r"[^\w]+", " ", team_split[0])
+				# Something similar for the second team name and map
+				team_split = re.split(r"[^\w]+", re.split(r".out", team_split[1])[0])
+				self.map_name = team_split[-1] # The map names are always one word and should always show up at the end of the string in these cases.
+				self.team2 = " ".join(team_split[:-1]) # Team names should occupy all other locations
+			except:
+				print("first line wasn't formatted as expected. Using the filename as the only metadata")
+				self.map_name = outfile
 
 		# Leave saving up to the user's input.
 		self.data = clean(outfile, save=save)
@@ -103,11 +109,9 @@ class CSGODem:
 
 
 def main(fname):
-	try:
-	dem = CSGODem("fname")
+	dem = CSGODem(fname)
 	print("Loaded " + dem)
 	dem.graph()
-
 
 if __name__ == '__main__':
 	"""Expects stdin args in the format of ./csgodem.py <FILENAME>."""
