@@ -15,3 +15,4 @@ Blue spots represent locations where players died, and orange spots represent lo
   * The class now parses the team names and map name from a properly generated `.out` file.  
 * **Jun 26** Edited how metadata was generated (now in [app.js](js/app.js)) and added (readded?) the maps folder, now using CSGO's naming conventions (de_\*)  
   * When creating [app.js](app.js), I found code from a different demo-based app that normalized locations in a demo to a given scale. In this case, I'm trying to normalize to a 100x100 scale (which is very easy to change later on). It seems, however, that the normalization fits perfectly for *de_mirage* and isn't meant for other maps. I'm going to stretch the extents to fit, which will hopefully allow me to develop a scale for later usage.  
+* **Jul 7** Moved to Django for the web framework. Will eventually containerize the Django app and the NodeJS module separately. Currently working towards making a base site.  

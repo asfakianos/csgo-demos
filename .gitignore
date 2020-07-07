@@ -1,6 +1,6 @@
 # General
 demos/*
-csgosite/csgodemo/js/node_modules/*
+csgosite/node/node_modules
 
 # Django
 *.log
