@@ -1,2 +1,12 @@
+# General
 demos/*
-js/node_modules
+csgosite/csgodemo/js/node_modules/*
+
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__
+db.*
+media
+secret.py

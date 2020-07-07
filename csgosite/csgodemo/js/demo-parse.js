@@ -78,10 +78,9 @@ try {
 	    const cts = teams[3];
 
 	    console.log(`END: \tTerrorists: ${terrorists.clanName} score ${terrorists.score}\n\tCTs: ${cts.clanName} score ${cts.score}`);
-		// fs.appendFile(fout, `END: \tTerrorists: ${terrorists.clanName} score ${terrorists.score}\tCTs: ${cts.clanName} score ${cts.score}\n`, e => {
-		//   if (e) throw e;
-		// });
-	    // console.log(`\nkills: ${killEventCount}\nHurt: ${hurtEventCount}`);
+	    fs.appendFile(fout, `/!ROUND/!\n`, e=> {
+	    	if (e) throw e;
+	    }); // end of round
 	  });
 
 	  demoFile.parse(buffer);
@@ -92,6 +91,7 @@ try {
 }
 
 // WIP - Ideally these should normalize the coordinates from the demo to fit a map, but this'll likely be moved to Python once I figure out the mapping
+// UPDATE: These dimensions are perfect for de_mirage, currently working on scaling for other maps
 function x_to_res(xinput) {
   const startX = -3217;
   const endX = 1912;

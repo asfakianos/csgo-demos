@@ -27,7 +27,7 @@ def clean(fname, save=False):
 	"""If save is set to True, the data will be saved in the .feather format and returned. If save is set to False, the data will only be returned"""
 	try:
 		# Need to specify engine as python due to our delimiter being > 1 (so the c engine won't work...)
-		fout = pd.read_csv(fname, delimiter=DELIM, skiprows=1, engine='python',
+		fout = pd.read_csv(fname, delimiter=DELIM, skiprows=2, engine='python',
 						   header=None,
 						   names=HEADER
 						   )
@@ -55,13 +55,21 @@ class CSGODem:
 		"""Accepts an outfile (.out) and extracts meta data before parsing the data and creating a dataframe.
 		If this is ever modified to be something more than just hltv parsing, this sort of assumption for team names, map will need to be changed. """
 
+		self.save = save
+
 		# Extracting metadata from the first line of the file
 		with open(outfile, 'r') as file:
 			self.fname = file.readline()[:-5]
 			self.map_name = file.readline().strip() # app.js sets the 2nd line to CSGO's name for the map
 
 		# Leave saving up to the user's input.
-		self.data = clean(outfile, save=save)
+		self.data = clean(outfile, save=self.save)
+
+	def entries(self):
+		try:
+			data = self.data
+
+
 
 	def graph(self):
 		try:
@@ -83,6 +91,7 @@ class CSGODem:
 			fig,ax = plt.subplots()
 
 			current_map_extent = MAP_EXTENT[self.map_name]
+			# scaled_extent = [i * SCALE for i in current_map_extent]
 
 			plt.xlim(current_map_extent[0], current_map_extent[1])
 			plt.ylim(current_map_extent[2], current_map_extent[3])
@@ -96,7 +105,12 @@ class CSGODem:
 			ax.get_xaxis().set_major_locator(ticker.NullLocator())
 			ax.get_yaxis().set_major_locator(ticker.NullLocator())
 
+			# If save, save an image of the plot
+			if self.save:
+				plt.savefig(f"{self.fname}.png", bbox_inches="tight", dpi=400)
+
 			plt.show()
+
 		except:
 			print("The object was not initialized correctly. Data might be missing post-init")
 
@@ -106,7 +120,7 @@ class CSGODem:
 
 
 def main(fname):
-	dem = CSGODem(fname)
+	dem = CSGODem(fname, save=True)
 	print("Loaded " + str(dem))
 	dem.graph()
 
